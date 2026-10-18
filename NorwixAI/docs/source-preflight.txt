@@ -1,0 +1,21 @@
+PASS: Project, build, documentation, and CI files exist
+PASS: Lexical delimiter checks across 30 Kotlin / Gradle files
+PASS: XML well-formedness across 5 resources / manifest files
+PASS: Android backup and cleartext traffic disabled
+PASS: Only Internet and microphone permissions declared
+PASS: Only launcher Activity exported
+PASS: Cloud backup and device-transfer data excluded
+PASS: No private provider website inference endpoints
+PASS: No embedded WebView / browser cookie scraping
+PASS: No API-key configuration or Authorization Basic
+PASS: No empty clickable button callbacks
+PASS: Authenticated Keystore encryption and atomic records present
+PASS: Official public-client OAuth, PKCE, host ID, scopes, and verifier wired
+PASS: Signature and issuer/audience/time/nonce checks present
+PASS: Public Responses endpoint and native streaming completion state wired
+PASS: Explicit test source exists for core and device security
+PASS: No APK falsely included in source tree
+
+17 offline source contracts passed.
+NOT RUN: Kotlin compiler, Android lint, unit/device tests, APK installation, live provider login/inference.
+These contracts are not a substitute for the pending checks in docs/VERIFICATION.md.

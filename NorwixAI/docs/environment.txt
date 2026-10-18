@@ -1,0 +1,6 @@
+FOUND: java
+MISSING: javac
+MISSING: sdkmanager
+MISSING: adb
+MISSING: installed Gradle; bootstrap needs network access
+MISSING: Android emulator binary (use a connected device for device tests)

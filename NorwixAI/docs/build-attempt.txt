@@ -1,0 +1,4 @@
+Downloading official Gradle 8.11.1 and its published SHA-256 checksum.
+curl: (22) The requested URL returned error: 403
+
+Build/bootstrap exit status: 22

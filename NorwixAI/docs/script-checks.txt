@@ -1,0 +1,3 @@
+PASS: bash -n for Gradle bootstrap, build, and doctor scripts.
+PASS: Python preflight syntax.
+PASS: CI YAML parses and declares events and the Android job.

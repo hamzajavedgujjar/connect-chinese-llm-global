@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Source-only bootstrap. No wrapper JAR could be downloaded in the authoring environment.
+set -euo pipefail
+norwix_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+exec bash "$norwix_root/tools/gradle.sh" "$@"

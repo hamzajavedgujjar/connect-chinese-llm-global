@@ -1,0 +1,86 @@
+name: Build Norwix AI APK
+run-name: Norwix AI APK · ${{ github.sha }}
+
+on:
+  push:
+    branches: [codex/norwix-apk]
+    paths:
+      - 'NorwixAI/**'
+      - '.github/workflows/norwix-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: norwix-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: NorwixAI
+
+jobs:
+  android:
+    name: Compile, test, sign, and install
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Install Android build tools
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Check source contracts
+        run: python3 tools/source_preflight.py
+      - name: Compile Kotlin, run unit tests and lint, and package APK
+        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:lintDebug :app:assembleDebug :app:assembleDebugAndroidTest
+      - name: Verify APK signature and package identity
+        run: |
+          mkdir -p deliverables
+          cp app/build/outputs/apk/debug/app-debug.apk deliverables/Norwix-AI-debug.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs deliverables/Norwix-AI-debug.apk > deliverables/signature-verification.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging deliverables/Norwix-AI-debug.apk > deliverables/package-badging.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          badging = Path('deliverables/package-badging.txt').read_text()
+          assert "package: name='ai.norwix'" in badging, 'Unexpected Android package'
+          assert "application-label:'Norwix AI'" in badging, 'Unexpected application name'
+          PY
+          sha256sum deliverables/Norwix-AI-debug.apk > deliverables/SHA256SUMS
+      - name: Install on Android 35 and run device smoke tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: cd NorwixAI && gradle --no-daemon --stacktrace :app:connectedDebugAndroidTest
+      - name: Upload verified APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Norwix-AI-debug
+          path: NorwixAI/deliverables/Norwix-AI-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload build and test evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Norwix-AI-verification
+          path: |
+            NorwixAI/deliverables/*.txt
+            NorwixAI/deliverables/SHA256SUMS
+            NorwixAI/app/build/reports/
+            NorwixAI/app/build/test-results/
+            NorwixAI/app/build/outputs/androidTest-results/
+          if-no-files-found: warn
+          retention-days: 14
