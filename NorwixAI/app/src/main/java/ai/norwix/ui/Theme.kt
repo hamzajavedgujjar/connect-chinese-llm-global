@@ -1,5 +1,6 @@
 package ai.norwix.ui
 
+import android.app.Activity
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -16,10 +17,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ai.norwix.domain.ThemeMode
+import androidx.core.view.WindowCompat
 
 private val night = darkColorScheme(
     primary = Color(0xFFC4B5FF), onPrimary = Color(0xFF191126),
@@ -41,6 +45,16 @@ private val pearl = lightColorScheme(
 @Composable
 fun NorwixTheme(mode: ThemeMode, content: @Composable () -> Unit) {
     val dark = mode == ThemeMode.MIDNIGHT || (mode == ThemeMode.SYSTEM && isSystemInDarkTheme())
+    val context = LocalContext.current
+    val view = LocalView.current
+    SideEffect {
+        (context as? Activity)?.let { activity ->
+            WindowCompat.getInsetsController(activity.window, view).apply {
+                isAppearanceLightStatusBars = !dark
+                isAppearanceLightNavigationBars = !dark
+            }
+        }
+    }
     MaterialTheme(colorScheme = if (dark) night else pearl,
         shapes = Shapes(small = RoundedCornerShape(14.dp), medium = RoundedCornerShape(22.dp), large = RoundedCornerShape(30.dp)),
         content = content)

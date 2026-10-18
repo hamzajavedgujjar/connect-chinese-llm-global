@@ -33,11 +33,11 @@ class NavigationInstrumentedTest {
             screenshot("02-login-accounts.png")
 
             navigate("CHATS")
-            compose.onNodeWithText("Rename", exact = true).performClick()
+            compose.onNodeWithText("Rename").performClick()
             compose.onNode(hasSetTextAction() and hasAnyAncestor(isDialog())).performTextReplacement("Draft isolation test")
-            compose.onNodeWithText("Save", exact = true).performClick()
+            compose.onNodeWithText("Save").performClick()
             compose.waitUntil(10_000) { app.repository.data.value!!.chats.any { it.title == "Draft isolation test" } }
-            compose.onNodeWithText("Draft isolation test", exact = true).performClick()
+            compose.onNodeWithText("Draft isolation test").performClick()
             compose.onNodeWithContentDescription("Message composer").performTextInput("A private draft that must stay in this chat")
             compose.waitUntil(10_000) { app.repository.data.value!!.activeChat!!.draft == "A private draft that must stay in this chat" }
             val originalChat = app.repository.data.value!!.activeChatId
@@ -48,12 +48,12 @@ class NavigationInstrumentedTest {
                 SemanticsMatcher.expectValue(SemanticsProperties.EditableText, AnnotatedString("")))
             navigate("CHATS")
             compose.onNode(hasSetTextAction()).performTextInput("Draft isolation")
-            compose.onNodeWithText("Draft isolation test", exact = true).performClick()
+            compose.onNodeWithText("Draft isolation test").performClick()
             compose.onNodeWithContentDescription("Message composer").assertTextEquals("A private draft that must stay in this chat")
             compose.onNodeWithContentDescription("Message composer").performTextClearance()
 
             navigate("THEMES")
-            compose.onNodeWithText("Pearl", exact = true).performClick()
+            compose.onNodeWithText("Pearl").performClick()
             compose.onNodeWithContentDescription("Back to conversation").performClick()
             compose.waitForIdle()
             screenshot("03-pearl-chat.png")
