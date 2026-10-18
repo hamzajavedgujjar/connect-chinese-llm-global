@@ -298,7 +298,7 @@ fun AboutScreen() {
         Text("0.1.0 · MIT-licensed source preview", color = MaterialTheme.colorScheme.onSurfaceVariant)
         GlassPanel(Modifier.fillMaxWidth()) {
             Text("Verification status", style = MaterialTheme.typography.titleMedium)
-            Text("The source implements official ChatGPT OSS OAuth and Responses streaming. Compilation, Android installation, live OAuth, model access, microphone, and speaker tests have not been completed in the authoring environment.")
+            Text("Norwix uses the official ChatGPT OSS OAuth flow and Responses streaming. Live sign-in, account eligibility, model access, microphone, and speaker behavior still require verification on your device. Build and emulator checks do not verify provider access.")
             Text("Gemini and Claude open their official websites using Android Custom Tabs or the installed browser. Their subscription accounts do not provide a verified native chat integration here.")
             Text("This app is independent and is not endorsed by OpenAI, Google, or Anthropic. All provider features, eligibility, and policies can change.", style = MaterialTheme.typography.bodySmall)
         }

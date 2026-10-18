@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,6 +46,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import ai.norwix.domain.*
+import ai.norwix.domain.Role as MessageRole
 import ai.norwix.platform.ProviderBrowser
 import ai.norwix.platform.VoiceState
 import kotlinx.coroutines.launch
@@ -139,6 +141,7 @@ fun NorwixApp(vm: NorwixViewModel) {
                             Page.entries.filter { it != Page.CHAT }.forEach { destination ->
                                 if (destination == Page.ACCOUNTS || destination == Page.ABOUT) HorizontalDivider(Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = .2f))
                                 NavigationDrawerItem(label = { Text(destination.title) }, selected = page == destination,
+                                    modifier = Modifier.testTag("nav-${destination.name}"),
                                     icon = { Icon(destination.icon, null) },
                                     onClick = { page = destination; scope.launch { drawer.close() } })
                             }
@@ -412,7 +415,7 @@ fun NoticeRow(text: String, onDismiss: () -> Unit) {
 fun MessageBubble(message: Message, onSpeak: () -> Unit, onDelete: () -> Unit) {
     val context = LocalContext.current
     var delete by remember { mutableStateOf(false) }
-    val isUser = message.role == Role.USER
+    val isUser = message.role == MessageRole.USER
     Column(Modifier.fillMaxWidth().padding(start = if (isUser) 28.dp else 0.dp, end = if (isUser) 0.dp else 10.dp),
         horizontalAlignment = if (isUser) Alignment.End else Alignment.Start) {
         Text(if (isUser) "You" else message.source, color = MaterialTheme.colorScheme.onSurfaceVariant,
